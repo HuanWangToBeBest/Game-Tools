@@ -17,7 +17,7 @@ void MainMenu()
 int main()
 {
 	//根据窗口名字得到句柄
-	HWND hGame = ::FindWindow(NULL,L"植物大战僵尸中文版");
+	HWND hGame = ::FindWindow(NULL,L"Plants vs. Zombies 1.2.0.1073 RELEASE");
 	//得到窗口的详细信息
 	RECT r;
 	::GetWindowRect(hGame,&r);
