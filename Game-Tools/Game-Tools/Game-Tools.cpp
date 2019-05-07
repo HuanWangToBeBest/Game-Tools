@@ -14,6 +14,28 @@ void MainMenu()
 	printf("       3.退出\n");
 	printf("========================\n");
 }
+int DisplaySun()
+{
+	//974488891
+	HWND hGame = ::FindWindow(NULL, L"Plants vs. Zombies 1.2.0.1073 RELEASE");
+	//得到线程或进程的ID
+	DWORD ProcessId;
+    //传出参数得到窗口的线程的Id
+	::GetWindowThreadProcessId(hGame,&ProcessId);
+	//根据id得到进程句柄
+	HANDLE hProcess = ::OpenProcess(PROCESS_ALL_ACCESS,false,ProcessId);
+	//windows 参数 返回值
+	LPVOID pBase = (LPVOID)6987456;//基值 CE
+	int sun = 0;
+	LPVOID rbuffer = (LPVOID)&sun;
+	//hook
+	DWORD byred;
+	::ReadProcessMemory(hProcess, pBase,rbuffer,4,&byred);
+
+	::ReadProcessMemory(hProcess, pBase, rbuffer, 4, &byred);
+
+	::ReadProcessMemory(hProcess, pBase, rbuffer, 4, &byred);
+}
 int main()
 {
 	//根据窗口名字得到句柄
@@ -26,7 +48,33 @@ int main()
 	POINT P;
 	::GetCursorPos(&P);
 	printf("鼠标位置 ：%d %d\n\n\n",P.x,P.y);
+	if (NULL == hGame)
+	{
+		printf("你得先运行游戏植物大战僵尸，在开启外挂！");
+		Sleep(30000);
+		return 0;
+	}
+
+	
 	MainMenu();
+	int op = 0;
+	while (1)
+	{
+		MainMenu();
+		scanf("%d",&op);
+		int temp = 0;
+		switch (op)
+		{
+		case 1:
+		{
+			DisplaySun();
+		}
+		case 2:
+		default:
+			break;
+		}
+
+	}
 	return 0;
 }
 
