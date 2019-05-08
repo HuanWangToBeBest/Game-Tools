@@ -14,7 +14,7 @@ void MainMenu()
 	printf("       3.退出\n");
 	printf("========================\n");
 }
-int DisplaySun()
+void DisplaySun()
 {
 	//974488891
 	HWND hGame = ::FindWindow(NULL, L"Plants vs. Zombies 1.2.0.1073 RELEASE");
@@ -32,10 +32,46 @@ int DisplaySun()
 	DWORD byred;
 	::ReadProcessMemory(hProcess, pBase,rbuffer,4,&byred);
 
-	::ReadProcessMemory(hProcess, pBase, rbuffer, 4, &byred);
+	pBase = (LPVOID)(sun + 1896);//偏移
 
 	::ReadProcessMemory(hProcess, pBase, rbuffer, 4, &byred);
+
+	pBase = (LPVOID)(sun + 21856);
+
+	::ReadProcessMemory(hProcess, pBase, rbuffer, 4, &byred);
+	printf("当前阳光：%d \n", sun);
 }
+
+void ModifySun(int wsun) {
+	//974488891
+	HWND hGame = ::FindWindow(NULL, L"Plants vs. Zombies 1.2.0.1073 RELEASE");
+	//得到线程或进程的ID
+	DWORD ProcessId;
+	//传出参数得到窗口的线程的Id
+	::GetWindowThreadProcessId(hGame, &ProcessId);
+	//根据id得到进程句柄
+	HANDLE hProcess = ::OpenProcess(PROCESS_ALL_ACCESS, false, ProcessId);
+	//windows 参数 返回值
+	LPVOID pBase = (LPVOID)6987456;//基值 CE
+	int sun = 0;
+	LPVOID rbuffer = (LPVOID)&sun;
+	//hook
+	DWORD byred;
+	::ReadProcessMemory(hProcess, pBase, rbuffer, 4, &byred);
+
+	pBase = (LPVOID)(sun + 1896);//偏移
+
+	::ReadProcessMemory(hProcess, pBase, rbuffer, 4, &byred);
+
+	pBase = (LPVOID)(sun + 21856);
+
+	::ReadProcessMemory(hProcess, pBase, rbuffer, 4, &byred);
+	//printf("当前阳光：%d \n", sun);
+	LPVOID wbuf = (PVOID)wsun;
+	DWORD by;
+	::WriteProcessMemory(hProcess,(LPVOID)pBase,wbuf, 4, &by);
+}
+
 int main()
 {
 	//根据窗口名字得到句柄
@@ -61,13 +97,18 @@ int main()
 	while (1)
 	{
 		MainMenu();
-		scanf("%d",&op);
+		scanf_s("%d",&op);
 		int temp = 0;
 		switch (op)
 		{
 		case 1:
 		{
 			DisplaySun();
+			printf("请输入阳光的修改值\n");
+			int buf = 0;
+			scanf_s("%d ", &buf);
+			ModifySun(buf);
+			break;
 		}
 		case 2:
 		default:
